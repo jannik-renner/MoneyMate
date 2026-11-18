@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="src/MoneyMate.Application/MoneyMate.Application.csproj" Id="e378b32b-1905-433f-8667-7629a7f8ae63" />
+  <Project Path="src/MoneyMate.Domain/MoneyMate.Domain.csproj" />
+  <Project Path="src/MoneyMate.Infrastructure/MoneyMate.Infrastructure.csproj" Id="6b983e46-9a27-4f2f-936f-3d467d482ba0" />
+  <Project Path="tests/MoneyMate.UnitTests/MoneyMate.UnitTests.csproj" Id="5d72c9f0-fa69-43d1-850c-03073f3d82b9" />
+</Solution>

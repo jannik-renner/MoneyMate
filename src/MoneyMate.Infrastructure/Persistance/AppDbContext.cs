@@ -1,0 +1,202 @@
+﻿using Microsoft.EntityFrameworkCore;
+using MoneyMate.Domain.Entities;
+
+namespace MoneyMate.Infrastructure.Persistance
+{
+    internal class AppDbContext : DbContext
+    {
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+        {
+        }
+
+        public DbSet<HouseholdAccountBook> HouseholdAccountBook => Set<HouseholdAccountBook>();
+        public DbSet<Month> Months => Set<Month>();
+        public DbSet<IncomeExpenseCategory> IncomeExpenseCategories => Set<IncomeExpenseCategory>();
+        public DbSet<IncomeExpenseCategoryPosition> IncomeExpenseCategoryPositions => Set<IncomeExpenseCategoryPosition>();
+        public DbSet<Wallet> Wallets => Set<Wallet>();
+        public DbSet<IncomeExpense> IncomeExpenses => Set<IncomeExpense>();
+        public DbSet<IncomeExpensePosition> IncomeExpensePositions => Set<IncomeExpensePosition>();
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            // HouseholdAccountBook
+            modelBuilder.Entity<HouseholdAccountBook>(entity =>
+            {
+                entity.ToTable("household_account_book");
+
+                entity.HasKey(e => e.Year);
+            });
+
+            // Month
+            modelBuilder.Entity<Month>(entity =>
+            {
+                entity.ToTable("month");
+
+                entity.HasKey(e => e.Id);
+
+                entity.Property(e => e.Id)
+                    .ValueGeneratedOnAdd();
+
+                entity.Property(e => e.MonthNumber)
+                    .HasColumnName("Month")
+                    .IsRequired();
+
+                entity.Property(e => e.Name)
+                    .HasMaxLength(24)
+                    .IsRequired();
+
+                entity.HasOne(e => e.HouseholdAccountBook)
+                    .WithMany(e => e.Months)
+                    .HasForeignKey(e => e.Year)
+                    .IsRequired(false);
+            });
+
+            // IncomeExpenseCategory
+            modelBuilder.Entity<IncomeExpenseCategory>(entity =>
+            {
+                entity.ToTable("income_expense_category");
+
+                entity.HasKey(e => e.Name);
+
+                entity.Property(e => e.Name)
+                    .HasMaxLength(128)
+                    .IsRequired();
+
+                entity.Property(e => e.Description)
+                    .HasMaxLength(128);
+
+                // Convert enum to CHAR(3)
+                entity.Property(e => e.Type)
+                    .HasColumnType("char(3)")
+                    .HasConversion(
+                        value => value == IncomeExpenseType.Income
+                            ? "INC"
+                            : "EXP",
+                        value => value == "INC"
+                            ? IncomeExpenseType.Income
+                            : IncomeExpenseType.Expense)
+                    .IsRequired();
+
+                entity.Property(e => e.IsFixed)
+                    .HasDefaultValue(false);
+            });
+
+            // IncomeExpenseCategoryPosition
+            modelBuilder.Entity<IncomeExpenseCategoryPosition>(entity =>
+            {
+                entity.ToTable("income_expense_category_position");
+
+                entity.HasKey(e => e.Name);
+
+                entity.Property(e => e.Name)
+                    .HasMaxLength(128)
+                    .IsRequired();
+
+                entity.Property(e => e.Category)
+                    .HasMaxLength(128)
+                    .IsRequired();
+
+                entity.HasOne(e => e.Category)
+                    .WithMany(e => e.Positions)
+                    .HasForeignKey(e => e.Category)
+                    .IsRequired();
+            });
+
+            // Wallet
+            modelBuilder.Entity<Wallet>(entity =>
+            {
+                entity.ToTable("wallet");
+
+                entity.HasKey(e => e.Id);
+
+                entity.Property(e => e.Id)
+                    .ValueGeneratedOnAdd();
+
+                entity.Property(e => e.Name)
+                    .HasMaxLength(128)
+                    .IsRequired();
+
+                entity.Property(e => e.Budget)
+                    .HasPrecision(12, 2);
+
+                entity.HasOne(e => e.Month)
+                    .WithMany(e => e.Wallets)
+                    .HasForeignKey(e => e.MonthId)
+                    .IsRequired();
+            });
+
+            // IncomeExpense
+            modelBuilder.Entity<IncomeExpense>(entity =>
+            {
+                entity.ToTable("income_expense");
+
+                entity.HasKey(e => e.Id);
+
+                entity.Property(e => e.Id)
+                    .ValueGeneratedOnAdd();
+
+                entity.Property(e => e.Description)
+                    .HasMaxLength(128)
+                    .IsRequired();
+
+                entity.Property(e => e.Date)
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.CategoryPosition)
+                    .HasMaxLength(128)
+                    .IsRequired();
+
+                entity.Property(e => e.Amount)
+                    .HasPrecision(12, 2);
+
+                entity.Property(e => e.Quantity)
+                    .HasPrecision(12, 2)
+                    .HasDefaultValue(1m);
+
+                entity.HasOne(e => e.Month)
+                    .WithMany(e => e.IncomeExpenses)
+                    .HasForeignKey(e => e.MonthId)
+                    .IsRequired();
+
+                entity.HasOne(e => e.CategoryPositionNavigation)
+                    .WithMany(e => e.IncomeExpenses)
+                    .HasForeignKey(e => e.CategoryPosition)
+                    .IsRequired();
+
+                entity.HasOne(e => e.Wallet)
+                    .WithMany(e => e.IncomeExpenses)
+                    .HasForeignKey(e => e.WalletId)
+                    .IsRequired(false);
+            });
+
+            // IncomeExpensePosition
+            modelBuilder.Entity<IncomeExpensePosition>(entity =>
+            {
+                entity.ToTable("income_expense_position");
+
+                entity.HasKey(e => e.Id);
+
+                entity.Property(e => e.Id)
+                    .ValueGeneratedOnAdd();
+
+                entity.Property(e => e.Description)
+                    .HasMaxLength(128)
+                    .IsRequired();
+
+                entity.Property(e => e.Amount)
+                    .HasPrecision(12, 2);
+
+                entity.Property(e => e.Quantity)
+                    .HasPrecision(12, 2)
+                    .HasDefaultValue(1m);
+
+                entity.HasOne(e => e.IncomeExpense)
+                    .WithMany(e => e.Positions)
+                    .HasForeignKey(e => e.IncomeExpenseId)
+                    .IsRequired();
+            });
+        }
+    }
+}
