@@ -1,12 +1,11 @@
-﻿
-
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using MoneyMate.Core.Entities;
-using MoneyMate.Infrastructure.Persistance;
+using MoneyMate.Core.Interfaces.Repositories;
+using MoneyMate.Infrastructure.DbContextSettings;
 
 namespace MoneyMate.Infrastructure.Repositories
 {
-    public class WalletRepository
+    public class WalletRepository : IIWalletRepository
     {
         private readonly AppDbContext _dbContext;
 

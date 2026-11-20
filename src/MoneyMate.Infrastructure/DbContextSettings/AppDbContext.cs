@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MoneyMate.Core.Entities;
 
-namespace MoneyMate.Infrastructure.Persistance
+namespace MoneyMate.Infrastructure.DbContextSettings
 {
     public class AppDbContext : DbContext
     {
@@ -100,13 +100,13 @@ namespace MoneyMate.Infrastructure.Persistance
                     .HasMaxLength(128)
                     .IsRequired();
 
-                entity.Property(e => e.Category)
+                entity.Property(e => e.CategoryName)
                     .HasMaxLength(128)
                     .IsRequired();
 
                 entity.HasOne(e => e.Category)
                     .WithMany(e => e.Positions)
-                    .HasForeignKey(e => e.Category)
+                    .HasForeignKey(e => e.CategoryName)
                     .IsRequired();
             });
 
