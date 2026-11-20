@@ -3,14 +3,14 @@ using MoneyMate.Domain.Entities;
 
 namespace MoneyMate.Infrastructure.Persistance
 {
-    internal class AppDbContext : DbContext
+    public class AppDbContext : DbContext
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
         }
 
         public DbSet<HouseholdAccountBook> HouseholdAccountBook => Set<HouseholdAccountBook>();
-        public DbSet<Month> Months => Set<Month>();
+        public DbSet<HouseholdAccountMonth> Months => Set<HouseholdAccountMonth>();
         public DbSet<IncomeExpenseCategory> IncomeExpenseCategories => Set<IncomeExpenseCategory>();
         public DbSet<IncomeExpenseCategoryPosition> IncomeExpenseCategoryPositions => Set<IncomeExpenseCategoryPosition>();
         public DbSet<Wallet> Wallets => Set<Wallet>();
@@ -30,9 +30,9 @@ namespace MoneyMate.Infrastructure.Persistance
             });
 
             // Month
-            modelBuilder.Entity<Month>(entity =>
+            modelBuilder.Entity<HouseholdAccountMonth>(entity =>
             {
-                entity.ToTable("month");
+                entity.ToTable("household_account_month");
 
                 entity.HasKey(e => e.Id);
 
@@ -40,7 +40,6 @@ namespace MoneyMate.Infrastructure.Persistance
                     .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.MonthNumber)
-                    .HasColumnName("Month")
                     .IsRequired();
 
                 entity.Property(e => e.Name)
@@ -144,7 +143,7 @@ namespace MoneyMate.Infrastructure.Persistance
                 entity.Property(e => e.Date)
                     .HasColumnType("datetime");
 
-                entity.Property(e => e.CategoryPosition)
+                entity.Property(e => e.CategoryPositionId)
                     .HasMaxLength(128)
                     .IsRequired();
 
@@ -160,9 +159,9 @@ namespace MoneyMate.Infrastructure.Persistance
                     .HasForeignKey(e => e.MonthId)
                     .IsRequired();
 
-                entity.HasOne(e => e.CategoryPositionNavigation)
+                entity.HasOne(e => e.CategoryPosition)
                     .WithMany(e => e.IncomeExpenses)
-                    .HasForeignKey(e => e.CategoryPosition)
+                    .HasForeignKey(e => e.CategoryPositionId)
                     .IsRequired();
 
                 entity.HasOne(e => e.Wallet)

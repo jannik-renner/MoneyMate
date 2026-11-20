@@ -6,20 +6,20 @@ namespace MoneyMate.Domain.Entities
     {
         public int Id { get; private set; }
         public int MonthId { get; private set; }
-        public Month? Month { get; private set; }
+        public HouseholdAccountMonth? Month { get; private set; }
         public string Description { get; private set; }
         public decimal Amount { get; private set; }
         public decimal Quantity { get; private set; }
         public DateTime Date { get; private set; }
-        public string CategoryPosition { get; private set; }
-        public IncomeExpenseCategoryPosition CategoryPositionNavigation { get; private set; }
+        public string CategoryPositionId { get; private set; }
+        public IncomeExpenseCategoryPosition CategoryPosition { get; private set; }
         public List<IncomeExpensePosition> Positions { get; private set; } = new List<IncomeExpensePosition>();
         public int? WalletId { get; private set; }
         public Wallet? Wallet { get; private set; }
 
         private IncomeExpense() { }
 
-        public IncomeExpense(Month month, string description, decimal amount, DateTime date, IncomeExpenseCategoryPosition categoryPosition)
+        public IncomeExpense(HouseholdAccountMonth month, string description, decimal amount, DateTime date, IncomeExpenseCategoryPosition categoryPosition)
         {
             MonthId = month.Id;
             Month = month;
@@ -27,11 +27,11 @@ namespace MoneyMate.Domain.Entities
             Amount = amount;
             Quantity = 1;
             Date = date;
-            CategoryPosition = categoryPosition.Name;
-            CategoryPositionNavigation = categoryPosition;
+            CategoryPositionId = categoryPosition.Name;
+            CategoryPosition = categoryPosition;
         }
 
-        public IncomeExpense(Month month, string description, decimal amount, decimal quantity, DateTime date, IncomeExpenseCategoryPosition categoryPosition)
+        public IncomeExpense(HouseholdAccountMonth month, string description, decimal amount, decimal quantity, DateTime date, IncomeExpenseCategoryPosition categoryPosition)
         {
             MonthId = month.Id;
             Month = month;
@@ -39,8 +39,44 @@ namespace MoneyMate.Domain.Entities
             Amount = amount;
             Quantity = quantity;
             Date = date;
-            CategoryPosition = categoryPosition.Name;
-            CategoryPositionNavigation = categoryPosition;
+            CategoryPositionId = categoryPosition.Name;
+            CategoryPosition = categoryPosition;
+        }
+
+        /// <summary>
+        /// Checks if the given position is already contained in the Position collection. 
+        /// If not it will add the position and calcualte the total amount from each position.
+        /// True is returned when successfully adding the position
+        /// </summary>
+        /// <param name="position"></param>
+        /// <returns></returns>
+        public bool AddPosition(IncomeExpensePosition position)
+        {
+            if (!Positions.Contains(position))
+            {
+                Positions.Remove(position);
+                Amount = Positions.Sum(x => x.Amount * x.Quantity);
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Checks if the given position is already contained in the Position collection. 
+        /// If contained, it will remove the position and calcualte the total amount from each position.
+        /// True is returned when successfully removing the position
+        /// </summary>
+        /// <param name="position"></param>
+        /// <returns></returns>
+        public bool RemovePosition(IncomeExpensePosition position)
+        {
+            if (Positions.Contains(position))
+            {
+                Positions.Remove(position);
+                Amount = Positions.Sum(x => x.Amount * x.Quantity);
+                return true;
+            }
+            return false;
         }
     }
 }
