@@ -1,6 +1,6 @@
 ﻿
 
-namespace MoneyMate.Domain.Entities
+namespace MoneyMate.Core.Entities
 {
     public class IncomeExpensePosition
     {

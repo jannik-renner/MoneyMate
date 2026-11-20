@@ -2,12 +2,13 @@
 
 specification/*
 
-src/MoneyMate.Application/.vs/*
-src/MoneyMate.Application/obj/*
+src/MoneyMate.Desktop/.vs/*
+src/MoneyMate.Desktop/obj/*
+src/MoneyMate.Desktop/bin/*
 
-src/MoneyMate.Domain/.vs/*
-src/MoneyMate.Domain/obj/*
-src/MoneyMate.Domain/bin/*
+src/MoneyMate.Core/.vs/*
+src/MoneyMate.Core/obj/*
+src/MoneyMate.Core/bin/*
 
 src/MoneyMate.Infrastructure/.vs/*
 src/MoneyMate.Infrastructure/obj/*

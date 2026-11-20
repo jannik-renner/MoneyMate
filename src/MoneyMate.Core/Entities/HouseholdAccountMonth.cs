@@ -1,5 +1,5 @@
 ﻿
-namespace MoneyMate.Domain.Entities
+namespace MoneyMate.Core.Entities
 {
     public class HouseholdAccountMonth
     {
@@ -71,9 +71,7 @@ namespace MoneyMate.Domain.Entities
             return IncomeExpenses
                 .Where(x =>
                     x.CategoryPosition.Category.Type == type &&
-                    (!isFixed.HasValue || x.CategoryPosition.Category.IsFixed == isFixed.Value) &&
-                    x.Date.Month == MonthNumber &&
-                    x.Date.Year == Year)
+                    (!isFixed.HasValue || x.CategoryPosition.Category.IsFixed == isFixed.Value))
                 .Sum(x => x.Amount * x.Quantity);
         }
 
@@ -91,8 +89,7 @@ namespace MoneyMate.Domain.Entities
             }
             return IncomeExpenses
                 .Where(x => x.CategoryPosition.Category.Name.Equals(category)
-                    && x.CategoryPosition.Category.Type == type
-                    && x.Date.Month == MonthNumber && x.Date.Year == Year)
+                    && x.CategoryPosition.Category.Type == type)
                 .Sum(x => x.Amount * x.Quantity);
         }
 
@@ -110,8 +107,7 @@ namespace MoneyMate.Domain.Entities
             }
             return IncomeExpenses
                 .Where(x => x.CategoryPosition.Name.Equals(categoryPosition)
-                    && x.CategoryPosition.Category.Type == type
-                    && x.Date.Month == MonthNumber && x.Date.Year == Year)
+                    && x.CategoryPosition.Category.Type == type)
                 .Sum(x => x.Amount * x.Quantity);
         }
         #endregion

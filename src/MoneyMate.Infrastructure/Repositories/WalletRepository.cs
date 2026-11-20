@@ -1,7 +1,7 @@
 ﻿
 
 using Microsoft.EntityFrameworkCore;
-using MoneyMate.Domain.Entities;
+using MoneyMate.Core.Entities;
 using MoneyMate.Infrastructure.Persistance;
 
 namespace MoneyMate.Infrastructure.Repositories
@@ -41,6 +41,12 @@ namespace MoneyMate.Infrastructure.Repositories
         public async void Update(Wallet wallet)
         {
             _dbContext.Wallets.Update(wallet);
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async void Delete(Wallet wallet)
+        {
+            _dbContext.Wallets.Remove(wallet);
             await _dbContext.SaveChangesAsync();
         }
     }

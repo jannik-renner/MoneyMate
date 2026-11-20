@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using MoneyMate.Domain.Entities;
+using MoneyMate.Core.Entities;
 
 namespace MoneyMate.Infrastructure.Persistance
 {
@@ -27,6 +27,13 @@ namespace MoneyMate.Infrastructure.Persistance
                 entity.ToTable("household_account_book");
 
                 entity.HasKey(e => e.Year);
+
+                entity.Property(e => e.CreatedTimestamp)
+                    .HasColumnType("datetime")
+                    .IsRequired();
+
+                entity.Property(e => e.ChangedTimestamp)
+                    .HasColumnType("datetime");
             });
 
             // Month
@@ -118,7 +125,8 @@ namespace MoneyMate.Infrastructure.Persistance
                     .IsRequired();
 
                 entity.Property(e => e.Budget)
-                    .HasPrecision(12, 2);
+                    .HasPrecision(12, 2)
+                    .HasDefaultValue(0m);
 
                 entity.HasOne(e => e.Month)
                     .WithMany(e => e.Wallets)
@@ -141,14 +149,16 @@ namespace MoneyMate.Infrastructure.Persistance
                     .IsRequired();
 
                 entity.Property(e => e.Date)
-                    .HasColumnType("datetime");
+                    .HasColumnType("datetime")
+                    .IsRequired();
 
                 entity.Property(e => e.CategoryPositionId)
                     .HasMaxLength(128)
                     .IsRequired();
 
                 entity.Property(e => e.Amount)
-                    .HasPrecision(12, 2);
+                    .HasPrecision(12, 2)
+                    .IsRequired();
 
                 entity.Property(e => e.Quantity)
                     .HasPrecision(12, 2)
@@ -185,7 +195,8 @@ namespace MoneyMate.Infrastructure.Persistance
                     .IsRequired();
 
                 entity.Property(e => e.Amount)
-                    .HasPrecision(12, 2);
+                    .HasPrecision(12, 2)
+                    .IsRequired();
 
                 entity.Property(e => e.Quantity)
                     .HasPrecision(12, 2)

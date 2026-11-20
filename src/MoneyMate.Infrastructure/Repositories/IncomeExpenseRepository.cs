@@ -1,7 +1,7 @@
 ﻿
 
 using Microsoft.EntityFrameworkCore;
-using MoneyMate.Domain.Entities;
+using MoneyMate.Core.Entities;
 using MoneyMate.Infrastructure.Persistance;
 
 namespace MoneyMate.Infrastructure.Repositories

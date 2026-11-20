@@ -1,10 +1,12 @@
 ﻿
-namespace MoneyMate.Domain.Entities
+namespace MoneyMate.Core.Entities
 {
     public class HouseholdAccountBook
     {
         public int Year { get; private set; }
         public List<HouseholdAccountMonth> Months { get; private set; } = new List<HouseholdAccountMonth>();
+        public DateTime CreatedTimestamp { get; private set; }
+        public DateTime? ChangedTimestamp { get; private set; }
 
         private HouseholdAccountBook() { }
 
