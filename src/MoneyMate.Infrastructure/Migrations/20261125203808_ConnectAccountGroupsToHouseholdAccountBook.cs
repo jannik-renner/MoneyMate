@@ -34,20 +34,20 @@ namespace MoneyMate.Infrastructure.Migrations
 
             migrationBuilder.InsertData(
                 table: "account_group",
-                columns: new[] { "Name", "Description", "HouseholdAccountBookId", "Type" },
+                columns: new[] { "Name", "Description", "HouseholdAccountBookId", "Type", "CanBeDeleted" },
                 values: new object[,]
                 {
-                    { "Sonstige Ausgaben", "Sonstige monatliche Ausgaben", null, "EXP" },
-                    { "Sonstige Einnahmen", "Sonstige monatliche Einnahmen", null, "INC" }
+                    { "Sonstige Ausgaben", "Sonstige monatliche Ausgaben", null, "EXP", false },
+                    { "Sonstige Einnahmen", "Sonstige monatliche Einnahmen", null, "INC", false }
                 });
 
             migrationBuilder.InsertData(
                 table: "account",
-                columns: new[] { "Name", "AccountGroupName" },
+                columns: new[] { "Name", "AccountGroupName", "CanBeDeleted" },
                 values: new object[,]
                 {
-                    { "Sonstige Ausgaben", "Sonstige Ausgaben" },
-                    { "Sonstige Einnahmen", "Sonstige Einnahmen" }
+                    { "Sonstige Ausgaben", "Sonstige Ausgaben", false },
+                    { "Sonstige Einnahmen", "Sonstige Einnahmen", false }
                 });
 
             migrationBuilder.CreateIndex(

@@ -102,8 +102,8 @@ namespace MoneyMate.Infrastructure.DbContextSettings
 
                 // Default entries
                 entity.HasData(
-                    new AccountGroup(AccountGroup.DefaultExpensesGroupName, "Sonstige monatliche Ausgaben", IncomeExpenseType.Expense, false, false),
-                    new AccountGroup(AccountGroup.DefaultIncomeGroupName, "Sonstige monatliche Einnahmen", IncomeExpenseType.Income, false, false)
+                    new AccountGroup(AccountGroup.DefaultExpensesGroupName, "Sonstige monatliche Ausgaben", IncomeExpenseType.Expense, false, false, null),
+                    new AccountGroup(AccountGroup.DefaultIncomeGroupName, "Sonstige monatliche Einnahmen", IncomeExpenseType.Income, false, false, null)
                 );
             });
 
