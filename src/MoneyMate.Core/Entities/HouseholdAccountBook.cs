@@ -5,6 +5,7 @@ namespace MoneyMate.Core.Entities
     {
         public int Year { get; private set; }
         public List<HouseholdAccountMonth> Months { get; private set; } = new List<HouseholdAccountMonth>();
+        public List<AccountGroup> AccountGroups { get; private set; } = new List<AccountGroup>();
         public DateTime CreatedTimestamp { get; private set; }
         public DateTime? ChangedTimestamp { get; private set; }
 
@@ -25,6 +26,7 @@ namespace MoneyMate.Core.Entities
             Months.Add(new HouseholdAccountMonth(this, 10, "Oktober"));
             Months.Add(new HouseholdAccountMonth(this, 11, "November"));
             Months.Add(new HouseholdAccountMonth(this, 12, "Dezember"));
+            CreatedTimestamp = DateTime.Now;
         }
     }
 }

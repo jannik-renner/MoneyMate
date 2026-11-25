@@ -36,7 +36,7 @@ namespace MoneyMate.Infrastructure.DbContextSettings
                     .HasColumnType("datetime");
             });
 
-            // Month
+            // HouseholdAccountMonth
             modelBuilder.Entity<HouseholdAccountMonth>(entity =>
             {
                 entity.ToTable("household_account_month");
@@ -59,7 +59,7 @@ namespace MoneyMate.Infrastructure.DbContextSettings
                     .IsRequired(false);
             });
 
-            // IncomeExpenseCategory
+            // AccountGroup
             modelBuilder.Entity<AccountGroup>(entity =>
             {
                 entity.ToTable("account_group");
@@ -87,9 +87,27 @@ namespace MoneyMate.Infrastructure.DbContextSettings
 
                 entity.Property(e => e.IsFixed)
                     .HasDefaultValue(false);
+
+                entity.Property(e => e.CanBeDeleted)
+                    .IsRequired()
+                    .HasDefaultValue(true);
+
+                entity.Property(e => e.HouseholdAccountBookId)
+                    .IsRequired(false);
+
+                entity.HasOne(e =>  e.HouseholdAccountBook)
+                     .WithMany(e => e.AccountGroups)
+                     .HasForeignKey(e => e.HouseholdAccountBookId)
+                     .IsRequired(false);
+
+                // Default entries
+                entity.HasData(
+                    new AccountGroup(AccountGroup.DefaultExpensesGroupName, "Sonstige monatliche Ausgaben", IncomeExpenseType.Expense, false, false),
+                    new AccountGroup(AccountGroup.DefaultIncomeGroupName, "Sonstige monatliche Einnahmen", IncomeExpenseType.Income, false, false)
+                );
             });
 
-            // IncomeExpenseCategoryPosition
+            // Account
             modelBuilder.Entity<Account>(entity =>
             {
                 entity.ToTable("account");
@@ -108,6 +126,16 @@ namespace MoneyMate.Infrastructure.DbContextSettings
                     .WithMany(e => e.Accounts)
                     .HasForeignKey(e => e.AccountGroupName)
                     .IsRequired();
+
+                entity.Property(e => e.CanBeDeleted)
+                    .IsRequired()
+                    .HasDefaultValue(true);
+
+                // Default entries
+                entity.HasData(
+                    new Account(Account.DefaultExpensesAccountName, AccountGroup.DefaultExpensesGroupName, false),
+                    new Account(Account.DefaultIncomeAccountName, AccountGroup.DefaultIncomeGroupName, false)
+                );
             });
 
             // Wallet

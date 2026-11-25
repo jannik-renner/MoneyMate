@@ -28,11 +28,30 @@ namespace MoneyMate.Infrastructure.Migrations
                         .HasMaxLength(128)
                         .HasColumnType("TEXT");
 
+                    b.Property<bool>("CanBeDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasDefaultValue(true);
+
                     b.HasKey("Name");
 
                     b.HasIndex("AccountGroupName");
 
                     b.ToTable("account", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Name = "Sonstige Ausgaben",
+                            AccountGroupName = "Sonstige Ausgaben",
+                            CanBeDeleted = false
+                        },
+                        new
+                        {
+                            Name = "Sonstige Einnahmen",
+                            AccountGroupName = "Sonstige Einnahmen",
+                            CanBeDeleted = false
+                        });
                 });
 
             modelBuilder.Entity("MoneyMate.Core.Entities.AccountGroup", b =>
@@ -41,9 +60,17 @@ namespace MoneyMate.Infrastructure.Migrations
                         .HasMaxLength(128)
                         .HasColumnType("TEXT");
 
+                    b.Property<bool>("CanBeDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasDefaultValue(true);
+
                     b.Property<string>("Description")
                         .HasMaxLength(128)
                         .HasColumnType("TEXT");
+
+                    b.Property<int?>("HouseholdAccountBookId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<bool>("IsFixed")
                         .ValueGeneratedOnAdd()
@@ -56,7 +83,27 @@ namespace MoneyMate.Infrastructure.Migrations
 
                     b.HasKey("Name");
 
+                    b.HasIndex("HouseholdAccountBookId");
+
                     b.ToTable("account_group", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Name = "Sonstige Ausgaben",
+                            CanBeDeleted = false,
+                            Description = "Sonstige monatliche Ausgaben",
+                            IsFixed = false,
+                            Type = "EXP"
+                        },
+                        new
+                        {
+                            Name = "Sonstige Einnahmen",
+                            CanBeDeleted = false,
+                            Description = "Sonstige monatliche Einnahmen",
+                            IsFixed = false,
+                            Type = "INC"
+                        });
                 });
 
             modelBuilder.Entity("MoneyMate.Core.Entities.HouseholdAccountBook", b =>
@@ -215,6 +262,15 @@ namespace MoneyMate.Infrastructure.Migrations
                     b.Navigation("AccountGroup");
                 });
 
+            modelBuilder.Entity("MoneyMate.Core.Entities.AccountGroup", b =>
+                {
+                    b.HasOne("MoneyMate.Core.Entities.HouseholdAccountBook", "HouseholdAccountBook")
+                        .WithMany("AccountGroups")
+                        .HasForeignKey("HouseholdAccountBookId");
+
+                    b.Navigation("HouseholdAccountBook");
+                });
+
             modelBuilder.Entity("MoneyMate.Core.Entities.HouseholdAccountMonth", b =>
                 {
                     b.HasOne("MoneyMate.Core.Entities.HouseholdAccountBook", "HouseholdAccountBook")
@@ -283,6 +339,8 @@ namespace MoneyMate.Infrastructure.Migrations
 
             modelBuilder.Entity("MoneyMate.Core.Entities.HouseholdAccountBook", b =>
                 {
+                    b.Navigation("AccountGroups");
+
                     b.Navigation("Months");
                 });
 
