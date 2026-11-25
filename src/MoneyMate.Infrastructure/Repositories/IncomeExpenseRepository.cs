@@ -77,8 +77,8 @@ namespace MoneyMate.Infrastructure.Repositories
         {
             return await _dbContext.IncomeExpenses
                 .Where(x =>
-                    x.CategoryPosition.Category.Type == type &&
-                    (!isFixed.HasValue || x.CategoryPosition.Category.IsFixed == isFixed.Value) &&
+                    x.Account.AccountGroup.Type == type &&
+                    (!isFixed.HasValue || x.Account.AccountGroup.IsFixed == isFixed.Value) &&
                     x.MonthId == monthId)
                 .SumAsync(x => x.Amount * x.Quantity);
         }

@@ -37,12 +37,12 @@ namespace MoneyMate.Infrastructure.Repositories
                 .Include(x => x.Months)
                     .ThenInclude(m => m.Wallets)
                         .ThenInclude(w => w.IncomeExpenses)
-                            .ThenInclude(ie => ie.CategoryPosition)
-                                .ThenInclude(cp => cp.Category)
+                            .ThenInclude(ie => ie.Account)
+                                .ThenInclude(cp => cp.AccountGroup)
                 .Include(x => x.Months)
                     .ThenInclude(m => m.IncomeExpenses)
-                        .ThenInclude(ie => ie.CategoryPosition)
-                            .ThenInclude(cp => cp.Category)
+                        .ThenInclude(ie => ie.Account)
+                            .ThenInclude(cp => cp.AccountGroup)
                 .Include(x => x.Months)
                     .ThenInclude(m => m.HouseholdAccountBook)
             .AsNoTracking()
@@ -51,7 +51,7 @@ namespace MoneyMate.Infrastructure.Repositories
 
         /// <summary>
         /// Loads a HouseholdAccountMonth by monthId as NoTracking.
-        /// Includes IncomeExpenses and their CategoryPositions with their Category object.
+        /// Includes IncomeExpenses and their AccountGroups with their Account object.
         /// Returns null when the month does not exist
         /// </summary>
         /// <param name="monthId"></param>
@@ -60,8 +60,8 @@ namespace MoneyMate.Infrastructure.Repositories
         {
             return await _dbContext.Months.Where(x => x.Id == monthId).AsNoTracking()
                 .Include(m => m.IncomeExpenses)
-                    .ThenInclude(ie => ie.CategoryPosition)
-                        .ThenInclude(cp => cp.Category)
+                    .ThenInclude(ie => ie.Account)
+                        .ThenInclude(cp => cp.AccountGroup)
                 .FirstOrDefaultAsync();
         }
     }

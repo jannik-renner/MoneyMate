@@ -70,8 +70,8 @@ namespace MoneyMate.Core.Entities
         {
             return IncomeExpenses
                 .Where(x =>
-                    x.CategoryPosition.Category.Type == type &&
-                    (!isFixed.HasValue || x.CategoryPosition.Category.IsFixed == isFixed.Value))
+                    x.Account.AccountGroup.Type == type &&
+                    (!isFixed.HasValue || x.Account.AccountGroup.IsFixed == isFixed.Value))
                 .Sum(x => x.Amount * x.Quantity);
         }
 
@@ -88,8 +88,8 @@ namespace MoneyMate.Core.Entities
                 return 0;
             }
             return IncomeExpenses
-                .Where(x => x.CategoryPosition.Category.Name.Equals(category)
-                    && x.CategoryPosition.Category.Type == type)
+                .Where(x => x.Account.AccountGroup.Name.Equals(category)
+                    && x.Account.AccountGroup.Type == type)
                 .Sum(x => x.Amount * x.Quantity);
         }
 
@@ -106,8 +106,8 @@ namespace MoneyMate.Core.Entities
                 return 0;
             }
             return IncomeExpenses
-                .Where(x => x.CategoryPosition.Name.Equals(categoryPosition)
-                    && x.CategoryPosition.Category.Type == type)
+                .Where(x => x.Account.Name.Equals(categoryPosition)
+                    && x.Account.AccountGroup.Type == type)
                 .Sum(x => x.Amount * x.Quantity);
         }
         #endregion

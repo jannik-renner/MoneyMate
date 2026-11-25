@@ -16,7 +16,7 @@ namespace MoneyMate.Infrastructure
             services.AddScoped<IBalanceRepository, BalanceRepository>();
             services.AddScoped<IHouseholdAccountBookRepository, HouseholdAccountBookRepository>();
             services.AddScoped<IIncomeExpenseRepository, IncomeExpenseRepository>();
-            services.AddScoped<IIncomeExpenseCategoryRepository, IncomeExpenseCategoryRepository>();
+            services.AddScoped<IAccountGroupRepository, AccountGroupRepository>();
             services.AddScoped<IIWalletRepository, WalletRepository>();
             return services;
         }

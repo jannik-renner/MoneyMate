@@ -17,6 +17,48 @@ namespace MoneyMate.Infrastructure.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.15");
 
+            modelBuilder.Entity("MoneyMate.Core.Entities.Account", b =>
+                {
+                    b.Property<string>("Name")
+                        .HasMaxLength(128)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("AccountGroupName")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Name");
+
+                    b.HasIndex("AccountGroupName");
+
+                    b.ToTable("account", (string)null);
+                });
+
+            modelBuilder.Entity("MoneyMate.Core.Entities.AccountGroup", b =>
+                {
+                    b.Property<string>("Name")
+                        .HasMaxLength(128)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(128)
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsFixed")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasDefaultValue(false);
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("char(3)");
+
+                    b.HasKey("Name");
+
+                    b.ToTable("account_group", (string)null);
+                });
+
             modelBuilder.Entity("MoneyMate.Core.Entities.HouseholdAccountBook", b =>
                 {
                     b.Property<int>("Year")
@@ -64,13 +106,13 @@ namespace MoneyMate.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<decimal>("Amount")
-                        .HasPrecision(12, 2)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("CategoryPositionId")
+                    b.Property<string>("AccountId")
                         .IsRequired()
                         .HasMaxLength(128)
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal>("Amount")
+                        .HasPrecision(12, 2)
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("Date")
@@ -95,55 +137,13 @@ namespace MoneyMate.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CategoryPositionId");
+                    b.HasIndex("AccountId");
 
                     b.HasIndex("MonthId");
 
                     b.HasIndex("WalletId");
 
                     b.ToTable("income_expense", (string)null);
-                });
-
-            modelBuilder.Entity("MoneyMate.Core.Entities.IncomeExpenseCategory", b =>
-                {
-                    b.Property<string>("Name")
-                        .HasMaxLength(128)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(128)
-                        .HasColumnType("TEXT");
-
-                    b.Property<bool>("IsFixed")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER")
-                        .HasDefaultValue(false);
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("char(3)");
-
-                    b.HasKey("Name");
-
-                    b.ToTable("income_expense_category", (string)null);
-                });
-
-            modelBuilder.Entity("MoneyMate.Core.Entities.IncomeExpenseCategoryPosition", b =>
-                {
-                    b.Property<string>("Name")
-                        .HasMaxLength(128)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("CategoryName")
-                        .IsRequired()
-                        .HasMaxLength(128)
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Name");
-
-                    b.HasIndex("CategoryName");
-
-                    b.ToTable("income_expense_category_position", (string)null);
                 });
 
             modelBuilder.Entity("MoneyMate.Core.Entities.IncomeExpensePosition", b =>
@@ -204,6 +204,17 @@ namespace MoneyMate.Infrastructure.Migrations
                     b.ToTable("wallet", (string)null);
                 });
 
+            modelBuilder.Entity("MoneyMate.Core.Entities.Account", b =>
+                {
+                    b.HasOne("MoneyMate.Core.Entities.AccountGroup", "AccountGroup")
+                        .WithMany("Accounts")
+                        .HasForeignKey("AccountGroupName")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AccountGroup");
+                });
+
             modelBuilder.Entity("MoneyMate.Core.Entities.HouseholdAccountMonth", b =>
                 {
                     b.HasOne("MoneyMate.Core.Entities.HouseholdAccountBook", "HouseholdAccountBook")
@@ -215,9 +226,9 @@ namespace MoneyMate.Infrastructure.Migrations
 
             modelBuilder.Entity("MoneyMate.Core.Entities.IncomeExpense", b =>
                 {
-                    b.HasOne("MoneyMate.Core.Entities.IncomeExpenseCategoryPosition", "CategoryPosition")
+                    b.HasOne("MoneyMate.Core.Entities.Account", "Account")
                         .WithMany("IncomeExpenses")
-                        .HasForeignKey("CategoryPositionId")
+                        .HasForeignKey("AccountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -231,22 +242,11 @@ namespace MoneyMate.Infrastructure.Migrations
                         .WithMany("IncomeExpenses")
                         .HasForeignKey("WalletId");
 
-                    b.Navigation("CategoryPosition");
+                    b.Navigation("Account");
 
                     b.Navigation("Month");
 
                     b.Navigation("Wallet");
-                });
-
-            modelBuilder.Entity("MoneyMate.Core.Entities.IncomeExpenseCategoryPosition", b =>
-                {
-                    b.HasOne("MoneyMate.Core.Entities.IncomeExpenseCategory", "Category")
-                        .WithMany("Positions")
-                        .HasForeignKey("CategoryName")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Category");
                 });
 
             modelBuilder.Entity("MoneyMate.Core.Entities.IncomeExpensePosition", b =>
@@ -271,6 +271,16 @@ namespace MoneyMate.Infrastructure.Migrations
                     b.Navigation("Month");
                 });
 
+            modelBuilder.Entity("MoneyMate.Core.Entities.Account", b =>
+                {
+                    b.Navigation("IncomeExpenses");
+                });
+
+            modelBuilder.Entity("MoneyMate.Core.Entities.AccountGroup", b =>
+                {
+                    b.Navigation("Accounts");
+                });
+
             modelBuilder.Entity("MoneyMate.Core.Entities.HouseholdAccountBook", b =>
                 {
                     b.Navigation("Months");
@@ -286,16 +296,6 @@ namespace MoneyMate.Infrastructure.Migrations
             modelBuilder.Entity("MoneyMate.Core.Entities.IncomeExpense", b =>
                 {
                     b.Navigation("Positions");
-                });
-
-            modelBuilder.Entity("MoneyMate.Core.Entities.IncomeExpenseCategory", b =>
-                {
-                    b.Navigation("Positions");
-                });
-
-            modelBuilder.Entity("MoneyMate.Core.Entities.IncomeExpenseCategoryPosition", b =>
-                {
-                    b.Navigation("IncomeExpenses");
                 });
 
             modelBuilder.Entity("MoneyMate.Core.Entities.Wallet", b =>

@@ -11,15 +11,15 @@ namespace MoneyMate.Core.Entities
         public decimal Amount { get; private set; }
         public decimal Quantity { get; private set; }
         public DateTime Date { get; private set; }
-        public string CategoryPositionId { get; private set; }
-        public IncomeExpenseCategoryPosition CategoryPosition { get; private set; }
+        public string AccountId { get; private set; }
+        public Account Account { get; private set; }
         public List<IncomeExpensePosition> Positions { get; private set; } = new List<IncomeExpensePosition>();
         public int? WalletId { get; private set; }
         public Wallet? Wallet { get; private set; }
 
         private IncomeExpense() { }
 
-        public IncomeExpense(HouseholdAccountMonth month, string description, decimal amount, DateTime date, IncomeExpenseCategoryPosition categoryPosition)
+        public IncomeExpense(HouseholdAccountMonth month, string description, decimal amount, DateTime date, Account account)
         {
             MonthId = month.Id;
             Month = month;
@@ -27,11 +27,11 @@ namespace MoneyMate.Core.Entities
             Amount = amount;
             Quantity = 1;
             Date = date;
-            CategoryPositionId = categoryPosition.Name;
-            CategoryPosition = categoryPosition;
+            AccountId = account.Name;
+            Account = account;
         }
 
-        public IncomeExpense(HouseholdAccountMonth month, string description, decimal amount, decimal quantity, DateTime date, IncomeExpenseCategoryPosition categoryPosition)
+        public IncomeExpense(HouseholdAccountMonth month, string description, decimal amount, decimal quantity, DateTime date, Account account)
         {
             MonthId = month.Id;
             Month = month;
@@ -39,8 +39,8 @@ namespace MoneyMate.Core.Entities
             Amount = amount;
             Quantity = quantity;
             Date = date;
-            CategoryPositionId = categoryPosition.Name;
-            CategoryPosition = categoryPosition;
+            AccountId = account.Name;
+            Account = account;
         }
 
         /// <summary>

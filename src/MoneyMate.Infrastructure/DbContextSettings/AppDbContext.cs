@@ -11,8 +11,8 @@ namespace MoneyMate.Infrastructure.DbContextSettings
 
         public DbSet<HouseholdAccountBook> HouseholdAccountBook => Set<HouseholdAccountBook>();
         public DbSet<HouseholdAccountMonth> Months => Set<HouseholdAccountMonth>();
-        public DbSet<IncomeExpenseCategory> IncomeExpenseCategories => Set<IncomeExpenseCategory>();
-        public DbSet<IncomeExpenseCategoryPosition> IncomeExpenseCategoryPositions => Set<IncomeExpenseCategoryPosition>();
+        public DbSet<AccountGroup> AccountGroups => Set<AccountGroup>();
+        public DbSet<Account> Accounts => Set<Account>();
         public DbSet<Wallet> Wallets => Set<Wallet>();
         public DbSet<IncomeExpense> IncomeExpenses => Set<IncomeExpense>();
         public DbSet<IncomeExpensePosition> IncomeExpensePositions => Set<IncomeExpensePosition>();
@@ -60,9 +60,9 @@ namespace MoneyMate.Infrastructure.DbContextSettings
             });
 
             // IncomeExpenseCategory
-            modelBuilder.Entity<IncomeExpenseCategory>(entity =>
+            modelBuilder.Entity<AccountGroup>(entity =>
             {
-                entity.ToTable("income_expense_category");
+                entity.ToTable("account_group");
 
                 entity.HasKey(e => e.Name);
 
@@ -90,9 +90,9 @@ namespace MoneyMate.Infrastructure.DbContextSettings
             });
 
             // IncomeExpenseCategoryPosition
-            modelBuilder.Entity<IncomeExpenseCategoryPosition>(entity =>
+            modelBuilder.Entity<Account>(entity =>
             {
-                entity.ToTable("income_expense_category_position");
+                entity.ToTable("account");
 
                 entity.HasKey(e => e.Name);
 
@@ -100,13 +100,13 @@ namespace MoneyMate.Infrastructure.DbContextSettings
                     .HasMaxLength(128)
                     .IsRequired();
 
-                entity.Property(e => e.CategoryName)
+                entity.Property(e => e.AccountGroupName)
                     .HasMaxLength(128)
                     .IsRequired();
 
-                entity.HasOne(e => e.Category)
-                    .WithMany(e => e.Positions)
-                    .HasForeignKey(e => e.CategoryName)
+                entity.HasOne(e => e.AccountGroup)
+                    .WithMany(e => e.Accounts)
+                    .HasForeignKey(e => e.AccountGroupName)
                     .IsRequired();
             });
 
@@ -152,7 +152,7 @@ namespace MoneyMate.Infrastructure.DbContextSettings
                     .HasColumnType("datetime")
                     .IsRequired();
 
-                entity.Property(e => e.CategoryPositionId)
+                entity.Property(e => e.AccountId)
                     .HasMaxLength(128)
                     .IsRequired();
 
@@ -169,9 +169,9 @@ namespace MoneyMate.Infrastructure.DbContextSettings
                     .HasForeignKey(e => e.MonthId)
                     .IsRequired();
 
-                entity.HasOne(e => e.CategoryPosition)
+                entity.HasOne(e => e.Account)
                     .WithMany(e => e.IncomeExpenses)
-                    .HasForeignKey(e => e.CategoryPositionId)
+                    .HasForeignKey(e => e.AccountId)
                     .IsRequired();
 
                 entity.HasOne(e => e.Wallet)

@@ -35,7 +35,7 @@ namespace MoneyMate.Core.Entities
             }
 
             return IncomeExpenses
-                .Where(x => x.CategoryPosition.Category.Type == IncomeExpenseType.Expense
+                .Where(x => x.Account.AccountGroup.Type == IncomeExpenseType.Expense
                     && x.Date.Month == Month!.MonthNumber && x.Date.Year == Month!.Year)
                 .Sum(x => x.Amount * x.Quantity);
         }
