@@ -111,5 +111,22 @@ namespace MoneyMate.Core.Entities
                 .Sum(x => x.Amount * x.Quantity);
         }
         #endregion
+
+
+        public override string ToString()
+        {
+            return $"Id:{Id}, {Year} {MonthNumber}";
+        }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is HouseholdAccountMonth ham &&
+                Id == ham.Id;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Id, Year, MonthNumber);
+        }
     }
 }
