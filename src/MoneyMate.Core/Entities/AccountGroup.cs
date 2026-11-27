@@ -50,5 +50,22 @@ namespace MoneyMate.Core.Entities
             if (Accounts.Any(p => p.Name.Equals(position.Name) && p.AccountGroup.Name.Equals(position.AccountGroup.Name)))
                 Accounts.Remove(position);
         }
+
+
+        public override string ToString()
+        {
+            return Name;
+        }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is AccountGroup acg &&
+                Name == acg.Name;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Name);
+        }
     }
 }

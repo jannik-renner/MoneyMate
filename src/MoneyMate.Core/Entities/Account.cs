@@ -38,5 +38,22 @@ namespace MoneyMate.Core.Entities
             AccountGroupName = accountGroupName;
             CanBeDeleted = canBeDeleted;
         }
+
+
+        public override string ToString()
+        {
+            return Name;
+        }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is Account acc &&
+                Name == acc.Name;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Name);
+        }
     }
 }

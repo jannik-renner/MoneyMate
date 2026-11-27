@@ -1,4 +1,6 @@
 ﻿
+using System.Xml.Linq;
+
 namespace MoneyMate.Core.Entities
 {
     public class HouseholdAccountBook
@@ -27,6 +29,23 @@ namespace MoneyMate.Core.Entities
             Months.Add(new HouseholdAccountMonth(this, 11, "November"));
             Months.Add(new HouseholdAccountMonth(this, 12, "Dezember"));
             CreatedTimestamp = DateTime.Now;
+        }
+
+
+        public override string ToString()
+        {
+            return Year.ToString();
+        }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is HouseholdAccountBook hab &&
+                Year == hab.Year;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Year);
         }
     }
 }
