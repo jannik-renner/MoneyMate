@@ -1,6 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MoneyMate.Core;
+using MoneyMate.Core.Logging;
+using MoneyMate.Desktop.ViewModels;
+using MoneyMate.Desktop.Views;
 using MoneyMate.Infrastructure;
 using MoneyMate.Infrastructure.DbContextSettings;
 using System.Windows;
@@ -48,6 +51,7 @@ namespace MoneyMate.Desktop
                 .GetRequiredService<MainWindow>();
 
             MainWindow = mainWindow;
+            mainWindow.DataContext = new MainWindowViewModel();
             mainWindow.Show();
 
             base.OnStartup(e);
